@@ -1,29 +1,74 @@
-// Mock data for logged-in admin
-const adminEmail = localStorage.getItem("loggedInAdminEmail");
+// EmailJS initialization
+emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS Public Key
 
-// Display logged-in admin email
-if (adminEmail) {
-  document.getElementById("loggedInEmail").textContent = `Logged in as: ${adminEmail}`;
-} else {
-  // Redirect to login if not logged in
-  window.location.href = "admin-login.html";
-}
+// Admin credentials
+const adminCredentials = {
+  email: "sarojxettri46@gmail.com",
+  pin: "9090"
+};
 
-// Logout functionality
-document.getElementById("logoutBtn").addEventListener("click", function () {
-  localStorage.removeItem("loggedInAdminEmail"); // Clear admin session
-  window.location.href = "admin-login.html"; // Redirect to login
-});
-
-// Active user messages (example data structure stored in localStorage)
-let userMessages = JSON.parse(localStorage.getItem("userMessages")) || {};
-
+// DOM elements
+const loginContainer = document.getElementById("loginContainer");
+const adminPanel = document.getElementById("adminPanel");
+const loginForm = document.getElementById("loginForm");
+const adminEmailInput = document.getElementById("adminEmail");
+const adminPinInput = document.getElementById("adminPin");
+const loginError = document.getElementById("loginError");
+const loggedInEmail = document.getElementById("loggedInEmail");
+const logoutBtn = document.getElementById("logoutBtn");
 const usersList = document.getElementById("usersList");
 const chatContainer = document.getElementById("chatContainer");
 const chatMessages = document.getElementById("chatMessages");
 const currentUserName = document.getElementById("currentUserName");
+const adminMessageInput = document.getElementById("adminMessageInput");
+const sendReplyBtn = document.getElementById("sendReplyBtn");
 
-// Populate the list of active users
+// Mock data for user messages
+let userMessages = JSON.parse(localStorage.getItem("userMessages")) || {};
+
+// Login form submission
+loginForm.addEventListener("submit", function (e) {
+  e.preventDefault();
+  const email = adminEmailInput.value.trim();
+  const pin = adminPinInput.value.trim();
+
+  if (email === adminCredentials.email && pin === adminCredentials.pin) {
+    // Login successful
+    loggedInEmail.textContent = `Logged in as: ${email}`;
+    loginContainer.style.display = "none";
+    adminPanel.style.display = "block";
+
+    // Notify login attempt via EmailJS
+    sendLoginNotification(email);
+  } else {
+    loginError.textContent = "Incorrect email or pin. Please try again.";
+  }
+});
+
+// Logout functionality
+logoutBtn.addEventListener("click", function () {
+  adminPanel.style.display = "none";
+  loginContainer.style.display = "block";
+});
+
+// Notify admin login attempt via EmailJS
+function sendLoginNotification(email) {
+  const templateParams = {
+    email: email,
+    location: "Unknown Location",
+    time: new Date().toLocaleString()
+  };
+
+  emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", templateParams)
+    .then(() => {
+      console.log("Login notification sent.");
+    })
+    .catch(error => {
+      console.error("Failed to send login notification:", error);
+    });
+}
+
+// Populate active users
 Object.keys(userMessages).forEach(user => {
   const userElement = document.createElement("li");
   userElement.textContent = user;
@@ -33,10 +78,10 @@ Object.keys(userMessages).forEach(user => {
   usersList.appendChild(userElement);
 });
 
-// Load user messages into the chat container
+// Load user messages
 function loadUserMessages(user) {
   currentUserName.textContent = user;
-  chatMessages.innerHTML = ""; // Clear previous messages
+  chatMessages.innerHTML = "";
 
   if (userMessages[user]) {
     userMessages[user].forEach(msg => {
@@ -47,18 +92,16 @@ function loadUserMessages(user) {
     });
   }
 
-  chatContainer.style.display = "block"; // Show chat container
+  chatContainer.style.display = "block";
 }
 
 // Send admin reply
-document.getElementById("sendReplyBtn").addEventListener("click", function () {
-  const adminMessageInput = document.getElementById("adminMessageInput");
+sendReplyBtn.addEventListener("click", function () {
   const message = adminMessageInput.value.trim();
 
   if (message !== "") {
     const user = currentUserName.textContent;
 
-    // Add admin's message to userMessages
     if (!userMessages[user]) {
       userMessages[user] = [];
     }
@@ -73,7 +116,6 @@ document.getElementById("sendReplyBtn").addEventListener("click", function () {
     messageElement.classList.add("admin-message");
     chatMessages.appendChild(messageElement);
 
-    // Clear the input field
     adminMessageInput.value = "";
   }
 });
