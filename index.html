@@ -3,27 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Chat Panel</title>
+  <title>Admin Panel</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="chat-container">
-    <h2>Admin Chat Panel</h2>
+  <div class="admin-container">
+    <header class="admin-header">
+      <h2>Admin Panel</h2>
+      <p id="loggedInEmail"></p>
+      <button id="logoutBtn">Logout</button>
+    </header>
 
-    <div id="activeUsers">
-      <h3>Active Users</h3>
-      <ul id="usersList"></ul>
-    </div>
-
-    <div id="chatArea" style="display: none;">
-      <h3>Chat with <span id="currentUserName"></span></h3>
-      <ul id="chatMessages"></ul>
-
-      <div class="chat-input">
-        <input id="adminMessageInput" type="text" placeholder="Write your reply..." />
-        <button id="sendAdminReplyBtn">Send Reply</button>
+    <main>
+      <div id="userListContainer">
+        <h3>Active Users</h3>
+        <ul id="usersList"></ul>
       </div>
-    </div>
+
+      <div id="chatContainer" style="display: none;">
+        <h3>Chat with <span id="currentUserName"></span></h3>
+        <ul id="chatMessages"></ul>
+        <div class="chat-input">
+          <input id="adminMessageInput" type="text" placeholder="Type your reply here..." />
+          <button id="sendReplyBtn">Send Reply</button>
+        </div>
+      </div>
+    </main>
   </div>
 
   <script src="admin.js"></script>
