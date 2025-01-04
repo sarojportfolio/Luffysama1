@@ -5,9 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Panel</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
 </head>
 <body>
-  <div class="admin-container">
+  <div id="loginContainer" class="login-container">
+    <h2>Admin Login</h2>
+    <form id="loginForm">
+      <input type="email" id="adminEmail" placeholder="Email" required />
+      <input type="password" id="adminPin" placeholder="Pin" required />
+      <button type="submit">Login</button>
+    </form>
+    <p id="loginError" class="error-message"></p>
+  </div>
+
+  <div id="adminPanel" class="admin-container" style="display: none;">
     <header class="admin-header">
       <h2>Admin Panel</h2>
       <p id="loggedInEmail"></p>
