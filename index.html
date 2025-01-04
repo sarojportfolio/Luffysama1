@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Chat Panel</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="chat-container">
+    <h2>Admin Chat Panel</h2>
+
+    <div id="activeUsers">
+      <h3>Active Users</h3>
+      <ul id="usersList"></ul>
+    </div>
+
+    <div id="chatArea" style="display: none;">
+      <h3>Chat with <span id="currentUserName"></span></h3>
+      <ul id="chatMessages"></ul>
+
+      <div class="chat-input">
+        <input id="adminMessageInput" type="text" placeholder="Write your reply..." />
+        <button id="sendAdminReplyBtn">Send Reply</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
