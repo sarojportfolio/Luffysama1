@@ -1,59 +1,79 @@
-let userMessages = JSON.parse(localStorage.getItem('userMessages')) || {}; // Load user messages
+// Mock data for logged-in admin
+const adminEmail = localStorage.getItem("loggedInAdminEmail");
+
+// Display logged-in admin email
+if (adminEmail) {
+  document.getElementById("loggedInEmail").textContent = `Logged in as: ${adminEmail}`;
+} else {
+  // Redirect to login if not logged in
+  window.location.href = "admin-login.html";
+}
+
+// Logout functionality
+document.getElementById("logoutBtn").addEventListener("click", function () {
+  localStorage.removeItem("loggedInAdminEmail"); // Clear admin session
+  window.location.href = "admin-login.html"; // Redirect to login
+});
+
+// Active user messages (example data structure stored in localStorage)
+let userMessages = JSON.parse(localStorage.getItem("userMessages")) || {};
 
 const usersList = document.getElementById("usersList");
-const chatArea = document.getElementById("chatArea");
+const chatContainer = document.getElementById("chatContainer");
 const chatMessages = document.getElementById("chatMessages");
 const currentUserName = document.getElementById("currentUserName");
 
-// Display active users
+// Populate the list of active users
 Object.keys(userMessages).forEach(user => {
   const userElement = document.createElement("li");
   userElement.textContent = user;
   userElement.addEventListener("click", function () {
-    displayUserMessages(user);
+    loadUserMessages(user);
   });
   usersList.appendChild(userElement);
 });
 
-// Display selected user's messages
-function displayUserMessages(user) {
+// Load user messages into the chat container
+function loadUserMessages(user) {
   currentUserName.textContent = user;
-  chatMessages.innerHTML = ''; // Clear previous messages
+  chatMessages.innerHTML = ""; // Clear previous messages
 
-  // Load and display user's messages
   if (userMessages[user]) {
     userMessages[user].forEach(msg => {
       const messageElement = document.createElement("li");
       messageElement.textContent = `${msg.sender}: ${msg.message}`;
-      messageElement.classList.add(msg.sender === user ? 'user-message' : 'admin-message');
+      messageElement.classList.add(msg.sender === user ? "user-message" : "admin-message");
       chatMessages.appendChild(messageElement);
     });
   }
 
-  // Show the chat area
-  chatArea.style.display = "block";
-
-  // Handle admin reply
-  document.getElementById("sendAdminReplyBtn").onclick = function () {
-    const adminMessage = document.getElementById("adminMessageInput").value.trim();
-    if (adminMessage !== "") {
-      // Add the admin's reply to the messages
-      if (!userMessages[user]) {
-        userMessages[user] = [];
-      }
-      userMessages[user].push({ sender: "Admin", message: adminMessage });
-
-      // Update localStorage
-      localStorage.setItem('userMessages', JSON.stringify(userMessages));
-
-      // Display the new message
-      const adminMessageElement = document.createElement("li");
-      adminMessageElement.textContent = `Admin: ${adminMessage}`;
-      adminMessageElement.classList.add('admin-message');
-      chatMessages.appendChild(adminMessageElement);
-
-      // Clear input field
-      document.getElementById("adminMessageInput").value = '';
-    }
-  };
+  chatContainer.style.display = "block"; // Show chat container
 }
+
+// Send admin reply
+document.getElementById("sendReplyBtn").addEventListener("click", function () {
+  const adminMessageInput = document.getElementById("adminMessageInput");
+  const message = adminMessageInput.value.trim();
+
+  if (message !== "") {
+    const user = currentUserName.textContent;
+
+    // Add admin's message to userMessages
+    if (!userMessages[user]) {
+      userMessages[user] = [];
+    }
+    userMessages[user].push({ sender: "Admin", message: message });
+
+    // Update localStorage
+    localStorage.setItem("userMessages", JSON.stringify(userMessages));
+
+    // Display admin's message
+    const messageElement = document.createElement("li");
+    messageElement.textContent = `Admin: ${message}`;
+    messageElement.classList.add("admin-message");
+    chatMessages.appendChild(messageElement);
+
+    // Clear the input field
+    adminMessageInput.value = "";
+  }
+});
