@@ -1,10 +1,12 @@
-// Load stored messages
-let userMessages = JSON.parse(localStorage.getItem('userMessages')) || {};
+let userMessages = JSON.parse(localStorage.getItem('userMessages')) || {}; // Load user messages
+
+const usersList = document.getElementById("usersList");
+const chatArea = document.getElementById("chatArea");
+const chatMessages = document.getElementById("chatMessages");
+const currentUserName = document.getElementById("currentUserName");
 
 // Display active users
-const usersList = document.getElementById("usersList");
-
-Object.keys(userMessages).forEach((user) => {
+Object.keys(userMessages).forEach(user => {
   const userElement = document.createElement("li");
   userElement.textContent = user;
   userElement.addEventListener("click", function () {
@@ -15,10 +17,6 @@ Object.keys(userMessages).forEach((user) => {
 
 // Display selected user's messages
 function displayUserMessages(user) {
-  const chatArea = document.getElementById("chatArea");
-  const chatMessages = document.getElementById("chatMessages");
-  const currentUserName = document.getElementById("currentUserName");
-
   currentUserName.textContent = user;
   chatMessages.innerHTML = ''; // Clear previous messages
 
@@ -32,9 +30,9 @@ function displayUserMessages(user) {
     });
   }
 
-  // Show chat area
+  // Show the chat area
   chatArea.style.display = "block";
-  
+
   // Handle admin reply
   document.getElementById("sendAdminReplyBtn").onclick = function () {
     const adminMessage = document.getElementById("adminMessageInput").value.trim();
@@ -45,7 +43,7 @@ function displayUserMessages(user) {
       }
       userMessages[user].push({ sender: "Admin", message: adminMessage });
 
-      // Update the localStorage (simulating server-side communication)
+      // Update localStorage
       localStorage.setItem('userMessages', JSON.stringify(userMessages));
 
       // Display the new message
